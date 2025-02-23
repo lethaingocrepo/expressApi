@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Tester</title>
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    async function fetchItems() {
+      const response = await fetch('/api/items');
+      const items = await response.json();
+      document.getElementById('items').innerText = JSON.stringify(items, null, 2);
+    }
+
+    async function createItem() {
+      const newItem = { id: parseInt(document.getElementById('itemId').value), name: document.getElementById('itemName').value };
+      const response = await fetch('/api/items', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newItem)
+      });
+      const result = await response.json();
+      alert(result.message);
+      fetchItems();
+    }
+
+    async function getItem() {
+      const id = document.getElementById('getItemId').value;
+      const response = await fetch(`/api/items/${id}`);
+      const item = await response.json();
+      document.getElementById('item').innerText = JSON.stringify(item, null, 2);
+    }
+
+    async function updateItem() {
+      const id = document.getElementById('updateItemId').value;
+      const updatedItem = { id: parseInt(id), name: document.getElementById('updateItemName').value };
+      const response = await fetch(`/api/items/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedItem)
+      });
+      const result = await response.json();
+      alert(result.message);
+      fetchItems();
+    }
+
+    async function deleteItem() {
+      const id = document.getElementById('deleteItemId').value;
+      const response = await fetch(`/api/items/${id}`, { method: 'DELETE' });
+      const result = await response.json();
+      alert(result.message);
+      fetchItems();
+    }
+  </script>
+</head>
+<body>
+  <h1>API Tester</h1>
+  <button onclick="fetchItems()">Fetch Items</button>
+  <pre id="items"></pre>
+
+  <h2>Create Item</h2>
+  <input type="number" id="itemId" placeholder="ID">
+  <input type="text" id="itemName" placeholder="Name">
+  <button onclick="createItem()">Create</button>
+
+  <h2>Get Item</h2>
+  <input type="number" id="getItemId" placeholder="ID">
+  <button onclick="getItem()">Get</button>
+  <pre id="item"></pre>
+
+  <h2>Update Item</h2>
+  <input type="number" id="updateItemId" placeholder="ID">
+  <input type="text" id="updateItemName" placeholder="Name">
+  <button onclick="updateItem()">Update</button>
+
+  <h2>Delete Item</h2>
+  <input type="number" id="deleteItemId" placeholder="ID">
+  <button onclick="deleteItem()">Delete</button>
+</body>
+</html>
